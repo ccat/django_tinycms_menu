@@ -40,7 +40,7 @@ def show_absolute_menu(context, sublevel = 0, tag="ul"):
 
 
 @register.simple_tag(takes_context=True)
-def show_submenu(context, sublevel = 0, tag="ul"):
+def show_submenu(context, sublevel = 0,showSiblings=False, tag="ul"):
     """Show sub menu.
 
     """
@@ -48,7 +48,17 @@ def show_submenu(context, sublevel = 0, tag="ul"):
 
     lang = translation.get_language()
 
-    result = internal_create_children_menu(current,sublevel,lang,tag)
+    result = ""
+
+    if(showSiblings):
+        siblings = current.get_siblings(include_self=True)
+        for item in siblings:
+            if(item!=current):
+                result = result + internal_create_children_menu(item,0,lang,tag)
+            else:
+                result = result + internal_create_children_menu(item,sublevel,lang,tag)
+    else:
+        result = internal_create_children_menu(current,sublevel,lang,tag)
     return result
 
 
